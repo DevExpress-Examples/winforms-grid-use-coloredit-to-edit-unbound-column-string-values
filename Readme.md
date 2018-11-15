@@ -1,3 +1,9 @@
+<!-- default file list -->
+*Files to look at*:
+
+* [Form1.cs](./CS/ColorEditExample/Form1.cs) (VB: [Form1.vb](./VB/ColorEditExample/Form1.vb))
+* [Program.cs](./CS/ColorEditExample/Program.cs) (VB: [Program.vb](./VB/ColorEditExample/Program.vb))
+<!-- default file list end -->
 # GridView: How to use ColorEdit for editing colors that are stored as strings
 
 
