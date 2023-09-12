@@ -3,17 +3,55 @@
 [![](https://img.shields.io/badge/Open_in_DevExpress_Support_Center-FF7200?style=flat-square&logo=DevExpress&logoColor=white)](https://supportcenter.devexpress.com/ticket/details/E3080)
 [![](https://img.shields.io/badge/📖_How_to_use_DevExpress_Examples-e9f6fc?style=flat-square)](https://docs.devexpress.com/GeneralInformation/403183)
 <!-- default badges end -->
-<!-- default file list -->
-*Files to look at*:
+
+# WinForms Data Grid - Use a Color Editor to edit colors that are stored as strings
+
+The WinForms ColorEdit is designed to work with values of the `Color` type. In this example, the data source stores colors as strings in the "ColorString" field. Follow the steps below to use the Color Editor to display and edit "ColorString" field values:
+
+1. Create an unbound column:
+
+  ```csharp
+  GridColumn unboundColumn = gridView1.Columns.AddField("Color");
+  unboundColumn.VisibleIndex = gridView1.Columns.Count;
+  unboundColumn.UnboundType = DevExpress.Data.UnboundColumnType.Object;
+  ```
+2. Create a [RepositoryItemColorEdit](https://docs.devexpress.com/WindowsForms/DevExpress.XtraEditors.Repository.RepositoryItemColorEdit) cell editor and assign it to the unbound column:
+    
+  ```csharp
+  RepositoryItemColorEdit ce = new RepositoryItemColorEdit();
+  ce.ShowCustomColors = false;
+  unboundColumn.ColumnEdit = ce;
+  ```
+3. Handle the GridView's [CustomUnboundColumnData](https://docs.devexpress.com/WindowsForms/DevExpress.XtraGrid.Views.Base.ColumnView.CustomUnboundColumnData) event to supply data for the unbound column (to convert string values to `Color`):
+  
+  ```csharp
+  private void gridView1_CustomUnboundColumnData(object sender, DevExpress.XtraGrid.Views.Base.CustomColumnDataEventArgs e) {
+      GridView view = sender as GridView;
+      DataView dv = view.DataSource as DataView;
+      if (e.IsGetData)
+          e.Value = GetColorFromString(dv[e.ListSourceRowIndex]["ColorString"].ToString());
+      else
+          dv[e.ListSourceRowIndex]["ColorString"] = ((Color)e.Value).Name;
+  }
+
+  Color GetColorFromString(string colorString) {
+      Color color = Color.Empty;
+      ColorConverter converter = new ColorConverter();
+      try { 
+          color = (Color)converter.ConvertFromString(colorString); 
+      }
+      catch { }
+      return color;
+  }
+  ```
+
+
+## Files to Review
 
 * [Form1.cs](./CS/ColorEditExample/Form1.cs) (VB: [Form1.vb](./VB/ColorEditExample/Form1.vb))
-* [Program.cs](./CS/ColorEditExample/Program.cs) (VB: [Program.vb](./VB/ColorEditExample/Program.vb))
-<!-- default file list end -->
-# GridView: How to use ColorEdit for editing colors that are stored as strings
 
 
-<p>By default, ColorEdit works with Color type values. So, if your data source stores only string values, the ColorEdit will not be able to edit them. As a solution, you can use unbound columns, which will store converted values of the Color type. In this case, ColorEdit will work correctly. More information can be  found in the article <a href="http://documentation.devexpress.com/#WindowsForms/CustomDocument1477"><u>Unbound Columns</u></a>.</p>
+## Documentation
 
-<br/>
-
-
+* [Unbound Columns](https://docs.devexpress.com/WindowsForms/1477/controls-and-libraries/data-grid/unbound-columns)
+* [Tutorial: Unbound Columns](docs.devexpress.com/WindowsForms/114678/controls-and-libraries/data-grid/getting-started/walkthroughs/data-binding-and-working-with-columns/tutorial-unbound-columns)
